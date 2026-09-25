@@ -33,8 +33,15 @@ SECRET_KEY = 'django-insecure-jp%f(g8a11_(6cm0swez7e*b*n&!q2s1ufo%&&!7-t@*=y@5l0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    ".railway.app",
+]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://edusphere-production-a6d2.up.railway.app",
+]
 
 # Application definition
 
