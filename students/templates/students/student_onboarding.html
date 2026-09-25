@@ -1,0 +1,30 @@
+{% extends 'students/base.html' %}
+{% block title %}Complete Your Profile · EduSphere{% endblock %}
+{% block page_label %}Complete Profile{% endblock %}
+{% block content %}
+<div class="page-head"><div><span class="profile-kicker">WELCOME TO EDUSPHERE</span><h1>Complete your student profile</h1><p>Tell us your information so the administrator can create and maintain your official university record.</p></div></div>
+<section class="card profile-edit-shell">
+  <div class="profile-edit-intro"><div class="profile-edit-avatar"><i data-lucide="user-round-plus"></i></div><div><span class="profile-kicker">STUDENT REGISTRATION</span><h2>Submit your information</h2><p>Your login email is automatically linked to this submission. Academic performance and attendance are controlled by the administrator.</p></div></div>
+  <div class="read-only-note" style="margin-bottom:22px"><i data-lucide="shield-check"></i><span><strong>Administrator controlled:</strong> GPA, attendance, academic status, course records, results and other official academic data cannot be changed by students.</span></div>
+  <form method="post" enctype="multipart/form-data" class="profile-edit-form">{% csrf_token %}
+    <div class="profile-form-section"><div class="profile-form-heading"><div><h2>Personal Information</h2><p>Provide accurate personal and contact details.</p></div><i data-lucide="user-round"></i></div><div class="form-grid">
+      <div class="field"><label>{{ form.full_name.label }}</label>{{ form.full_name }}{% for e in form.full_name.errors %}<span class="form-error">{{ e }}</span>{% endfor %}</div>
+      <div class="field"><label>Account Email</label><input value="{{ request.user.email }}" disabled><small class="help">This is linked to your EduSphere account.</small></div>
+      <div class="field"><label>{{ form.student_id.label }}</label>{{ form.student_id }}{% for e in form.student_id.errors %}<span class="form-error">{{ e }}</span>{% endfor %}</div>
+      <div class="field"><label>{{ form.phone.label }}</label>{{ form.phone }}{% for e in form.phone.errors %}<span class="form-error">{{ e }}</span>{% endfor %}</div>
+      <div class="field"><label>{{ form.date_of_birth.label }}</label>{{ form.date_of_birth }}{% for e in form.date_of_birth.errors %}<span class="form-error">{{ e }}</span>{% endfor %}</div>
+      <div class="field"><label>{{ form.gender.label }}</label>{{ form.gender }}{% for e in form.gender.errors %}<span class="form-error">{{ e }}</span>{% endfor %}</div>
+      <div class="field full"><label>{{ form.address.label }}</label>{{ form.address }}{% for e in form.address.errors %}<span class="form-error">{{ e }}</span>{% endfor %}</div>
+      <div class="field full"><label>{{ form.profile_photo.label }}</label>{{ form.profile_photo }}{% for e in form.profile_photo.errors %}<span class="form-error">{{ e }}</span>{% endfor %}<small class="help">JPG, PNG or WebP, up to 5 MB.</small></div>
+    </div></div>
+    <div class="profile-form-section"><div class="profile-form-heading"><div><h2>Academic Information</h2><p>Provide your current university information for the administrator to verify and maintain.</p></div><i data-lucide="graduation-cap"></i></div><div class="form-grid">
+      <div class="field"><label>{{ form.department.label }}</label>{{ form.department }}{% for e in form.department.errors %}<span class="form-error">{{ e }}</span>{% endfor %}</div>
+      <div class="field"><label>{{ form.program.label }}</label>{{ form.program }}{% for e in form.program.errors %}<span class="form-error">{{ e }}</span>{% endfor %}</div>
+      <div class="field"><label>{{ form.semester.label }}</label>{{ form.semester }}{% for e in form.semester.errors %}<span class="form-error">{{ e }}</span>{% endfor %}</div>
+      <div class="field"><label>{{ form.enrollment_year.label }}</label>{{ form.enrollment_year }}{% for e in form.enrollment_year.errors %}<span class="form-error">{{ e }}</span>{% endfor %}</div>
+    </div></div>
+    {% if form.non_field_errors %}<div class="form-error profile-form-global-errors">{% for e in form.non_field_errors %}{{ e }}{% endfor %}</div>{% endif %}
+    <div class="form-actions profile-edit-actions"><button class="btn btn-primary" type="submit"><i data-lucide="send"></i>Submit Information</button></div>
+  </form>
+</section>
+{% endblock %}

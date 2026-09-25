@@ -1,0 +1,127 @@
+{% extends 'students/base.html' %}
+{% block title %}Profile · EduSphere{% endblock %}
+{% block page_label %}Profile{% endblock %}
+{% block content %}
+<div class="page-head profile-page-head">
+  <div>
+    <span class="profile-kicker">UNIVERSITY IDENTITY</span>
+    <h1>My Profile</h1>
+    <p>Your university identity, academic overview, and account information.</p>
+  </div>
+  {% if student and is_portal_admin %}
+  <div class="actions">
+    <a class="btn btn-primary" href="{% url 'profile_edit' %}"><i data-lucide="pencil"></i>Edit Profile</a>
+  </div>
+  {% elif student %}<span class="badge info"><i data-lucide="lock-keyhole"></i> Read-only student record</span>{% endif %}
+</div>
+
+{% if student %}
+<section class="profile-identity-card card">
+  <div class="profile-identity-main">
+    <div class="profile-avatar-xl">
+      {% if student.profile_photo %}<img src="{{ student.profile_photo.url }}" alt="Profile photo of {{ student.full_name }}">{% else %}{{ student.full_name|first|upper }}{% endif %}
+    </div>
+    <div class="profile-identity-copy">
+      <div class="profile-eyebrow">DIGITAL UNIVERSITY IDENTITY</div>
+      <h2>{{ student.full_name }}</h2>
+      <p class="profile-id-line"><span>{{ student.student_id }}</span><span>•</span><span>{{ student.program }}</span></p>
+      <p class="profile-department">{{ student.department }}</p>
+      <div class="profile-tags">
+        <span class="badge info">{{ student.semester }}</span>
+        <span class="badge success">{{ student.status }}</span>
+        <span class="badge neutral">{{ performance_label }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="profile-identity-actions">
+    {% if is_portal_admin %}<a class="btn btn-primary" href="{% url 'profile_edit' %}"><i data-lucide="pencil"></i>Edit Profile</a><a class="btn" href="{% url 'student_detail' student.id %}"><i data-lucide="id-card"></i>Academic Record</a>{% else %}<span class="read-only-note"><i data-lucide="shield-check"></i>Your record is managed by the administrator.</span>{% endif %}
+  </div>
+</section>
+
+<section class="profile-overview-grid">
+  <div class="card profile-overview-card"><div class="profile-overview-icon"><i data-lucide="graduation-cap"></i></div><div><span>Current GPA</span><strong>{{ student.gpa }}</strong><small>out of 4.00</small></div></div>
+  <div class="card profile-overview-card"><div class="profile-overview-icon"><i data-lucide="calendar-check"></i></div><div><span>Attendance</span><strong>{{ student.attendance }}%</strong><small>overall attendance</small></div></div>
+  <div class="card profile-overview-card"><div class="profile-overview-icon"><i data-lucide="layers-3"></i></div><div><span>Semester</span><strong class="compact-value">{{ student.semester }}</strong><small>current academic level</small></div></div>
+  <div class="card profile-overview-card"><div class="profile-overview-icon"><i data-lucide="calendar-days"></i></div><div><span>Enrollment Year</span><strong>{{ student.enrollment_year }}</strong><small>admission year</small></div></div>
+  <div class="card profile-overview-card"><div class="profile-overview-icon"><i data-lucide="circle-check"></i></div><div><span>Academic Status</span><strong class="compact-value">{{ student.status }}</strong><small>current university status</small></div></div>
+</section>
+
+<div class="profile-two-column">
+  <section class="card card-pad">
+    <div class="section-title"><div><h2>Personal Information</h2><p>Your core identity details.</p></div><i data-lucide="user-round"></i></div>
+    <div class="profile-info-grid">
+      <div><span>Full Name</span><strong>{{ student.full_name }}</strong></div>
+      <div><span>Email</span><strong>{{ student.email }}</strong></div>
+      <div><span>Phone</span><strong>{{ student.phone }}</strong></div>
+      <div><span>Date of Birth</span><strong>{{ student.date_of_birth|date:"d F Y" }}</strong></div>
+      <div><span>Gender</span><strong>{{ student.gender }}</strong></div>
+      <div class="profile-info-wide"><span>Address</span><strong>{{ student.address }}</strong></div>
+    </div>
+  </section>
+
+  <section class="card card-pad">
+    <div class="section-title"><div><h2>Academic Information</h2><p>Institution-controlled university record.</p></div><i data-lucide="graduation-cap"></i></div>
+    <div class="profile-info-grid">
+      <div><span>Student ID</span><strong>{{ student.student_id }}</strong></div>
+      <div><span>Department</span><strong>{{ student.department }}</strong></div>
+      <div><span>Program</span><strong>{{ student.program }}</strong></div>
+      <div><span>Semester</span><strong>{{ student.semester }}</strong></div>
+      <div><span>Enrollment Year</span><strong>{{ student.enrollment_year }}</strong></div>
+      <div><span>Academic Status</span><strong>{{ student.status }}</strong></div>
+    </div>
+    <div class="read-only-note"><i data-lucide="lock-keyhole"></i><span>Academic fields are read-only and managed by the institution.</span></div>
+  </section>
+</div>
+
+<section class="profile-snapshot-section">
+  <div class="profile-section-heading"><div><span class="profile-kicker">ACADEMIC OVERVIEW</span><h2>Academic Snapshot</h2><p>Information available from your current EduSphere records.</p></div></div>
+  <div class="profile-snapshot-grid">
+    <div class="card card-pad">
+      <div class="section-title"><div><h2>Current Courses</h2><p>Course records matching your department and semester.</p></div><i data-lucide="book-open"></i></div>
+      {% if current_course_count %}
+      <div class="profile-course-list">
+        {% for course in current_courses %}<div class="profile-course-row"><div><strong>{{ course.course_code }}</strong><span>{{ course.course_name }}</span></div><div><span>{{ course.credit }} credit{% if course.credit != 1 %}s{% endif %}</span><small>{{ course.teacher_name }}</small></div></div>{% endfor %}
+      </div>
+      {% else %}
+      <div class="profile-empty-state"><div class="profile-empty-icon"><i data-lucide="book-open"></i></div><h3>No Course Records</h3><p>No course records are available for your current department and semester yet.</p><a class="btn btn-soft" href="{% url 'courses' %}">Browse Courses</a></div>
+      {% endif %}
+    </div>
+
+    <div class="card card-pad">
+      <div class="section-title"><div><h2>Recent Results</h2><p>Published academic result records.</p></div><i data-lucide="file-chart-column"></i></div>
+      <div class="profile-empty-state profile-empty-state-compact"><div class="profile-empty-icon"><i data-lucide="file-chart-column"></i></div><h3>No Result Records</h3><p>Academic results will appear here once result records are available in EduSphere.</p></div>
+    </div>
+
+    <div class="card card-pad">
+      <div class="section-title"><div><h2>Attendance Summary</h2><p>Current attendance information from your student record.</p></div><i data-lucide="calendar-check"></i></div>
+      <div class="snapshot-attendance"><div><strong>{{ student.attendance }}%</strong><span>Overall attendance</span></div><div class="progress"><span style="width:{{ student.attendance }}%"></span></div><small>Attendance is maintained as part of the university student record.</small></div>
+    </div>
+  </div>
+</section>
+
+<div class="profile-two-column profile-bottom-grid">
+  <section class="card card-pad">
+    <div class="section-title"><div><h2>Account Information</h2><p>Details from your Django authentication account.</p></div><i data-lucide="shield-check"></i></div>
+    <div class="profile-info-grid">
+      <div><span>Account Email</span><strong>{{ user_account.email }}</strong></div>
+      <div><span>Account Created</span><strong>{{ user_account.date_joined|date:"d F Y" }}</strong></div>
+      <div><span>Last Sign-in</span><strong>{% if user_account.last_login %}{{ user_account.last_login|date:"d F Y, h:i A" }}{% else %}No sign-in recorded{% endif %}</strong></div>
+      <div><span>Profile Updated</span><strong>{{ student.updated_at|date:"d F Y, h:i A" }}</strong></div>
+      <div><span>Authentication</span><strong>{% if google_connected %}Google connected{% else %}Email &amp; password{% endif %}</strong></div>
+    </div>
+  </section>
+
+  <section class="card card-pad">
+    <div class="section-title"><div><h2>{% if is_portal_admin %}Profile Actions{% else %}Student Account{% endif %}</h2><p>{% if is_portal_admin %}Manage the university profile record.{% else %}Your account is connected to your university record.{% endif %}</p></div><i data-lucide="settings-2"></i></div>
+    {% if is_portal_admin %}<div class="profile-action-list"><a href="{% url 'profile_edit' %}"><i data-lucide="pencil"></i><span><b>Edit Profile</b><small>Update the student record and profile information.</small></span><i data-lucide="chevron-right"></i></a><a href="{% url 'settings' %}"><i data-lucide="settings"></i><span><b>Account Settings</b><small>Manage portal preferences and notifications.</small></span><i data-lucide="chevron-right"></i></a></div>{% else %}<div class="profile-empty-state profile-empty-state-compact"><div class="profile-empty-icon"><i data-lucide="shield-check"></i></div><h3>Administrator Managed</h3><p>You can view your information here. Official student records, academic status, GPA, attendance and other system data can only be changed by the administrator.</p><a class="btn btn-soft" href="{% url 'settings' %}">Open My Settings</a></div>{% endif %}
+  </section>
+</div>
+
+{% if is_portal_admin %}<section class="profile-danger-zone card">
+  <div><span class="profile-danger-kicker">DANGER ZONE</span><h2>Delete Profile</h2><p>Permanently delete the linked student profile and account. This action cannot be undone.</p></div>
+  <a class="btn btn-danger-solid" href="{% url 'profile_delete' %}"><i data-lucide="trash-2"></i>Delete Profile</a>
+</section>{% endif %}
+{% else %}
+<section class="card"><div class="empty"><div class="empty-icon"><i data-lucide="user-round"></i></div><h3>No linked student profile</h3><p>Your login email does not currently match a student record, so EduSphere cannot build your university profile yet.</p></div></section>
+{% endif %}
+{% endblock %}

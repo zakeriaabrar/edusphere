@@ -1,0 +1,87 @@
+{% load static socialaccount %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Create account · EduSphere</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'students/css/app.css' %}">
+</head>
+<body class="auth-body">
+<main class="auth-shell">
+    <section class="auth-visual">
+        <div class="auth-visual-glow auth-glow-one"></div><div class="auth-visual-glow auth-glow-two"></div>
+        <div class="auth-visual-inner">
+            <div class="auth-logo-lockup"><span class="auth-logo">E</span><div><strong>EduSphere</strong><small>Academic Portal</small></div></div>
+            <div class="auth-visual-copy">
+                <span class="auth-kicker">START YOUR ACADEMIC WORKSPACE</span>
+                <h1>Everything you need<br><span>to stay on track.</span></h1>
+                <p>Create your account and access a focused university portal built around your academic journey.</p>
+            </div>
+            <div class="auth-feature-grid">
+                <div><span class="auth-feature-icon">✓</span><div><b>One Academic Identity</b><small>Your profile and records together</small></div></div>
+                <div><span class="auth-feature-icon">▣</span><div><b>Semester Workspace</b><small>Courses, schedule and progress</small></div></div>
+                <div><span class="auth-feature-icon">↗</span><div><b>Clear Progress</b><small>Results and attendance at a glance</small></div></div>
+            </div>
+            <div class="auth-visual-footer">EduSphere · Student Academic Management System</div>
+        </div>
+    </section>
+
+    <section class="auth-panel">
+        <div class="auth-card auth-card-modern auth-choice-card">
+            <div class="auth-mobile-brand"><span class="auth-logo auth-logo-light">E</span><div><strong>EduSphere</strong><small>Academic Portal</small></div></div>
+            <div class="auth-heading auth-heading-choice"><span class="auth-mini-label">GET STARTED</span><h2>Create your EduSphere account</h2><p>Choose how you would like to continue.</p></div>
+            {% if form.errors %}<div class="auth-alert"><span>!</span><div>Please review the highlighted fields.</div></div>{% endif %}
+
+            <button class="auth-email-choice" type="button" data-auth-email-toggle aria-expanded="{% if form.errors %}true{% else %}false{% endif %}"><span>Continue with Email</span><span class="auth-choice-arrow">→</span></button>
+            <div class="auth-divider auth-divider-choice"><span>OR</span></div>
+
+            <form method="post" action="{% provider_login_url 'google' process='signup' %}" class="google-auth-form">
+                {% csrf_token %}
+                <button class="google-btn google-btn-choice" type="submit">
+                    <span class="google-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="19" height="19"><path fill="#4285F4" d="M21.35 12.23c0-.79-.07-1.55-.2-2.28H12v4.31h5.24a4.49 4.49 0 0 1-1.94 2.95v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.43Z"/><path fill="#34A853" d="M12 21.75c2.63 0 4.83-.87 6.44-2.36l-3.14-2.45c-.87.58-1.98.92-3.3.92-2.54 0-4.7-1.72-5.47-4.03H3.28v2.53A9.73 9.73 0 0 0 12 21.75Z"/><path fill="#FBBC05" d="M6.53 13.83A5.84 5.84 0 0 1 6.23 12c0-.64.11-1.27.3-1.83V7.64H3.28A9.74 9.74 0 0 0 2.25 12c0 1.57.38 3.06 1.03 4.36l3.25-2.53Z"/><path fill="#EA4335" d="M12 6.14c1.43 0 2.71.49 3.72 1.45l2.79-2.79C16.83 3.2 14.63 2.25 12 2.25a9.73 9.73 0 0 0-8.72 5.39l3.25 2.53c.77-2.31 2.93-4.03 5.47-4.03Z"/></svg>
+                    </span>
+                    <span>Continue with Google</span>
+                </button>
+            </form>
+
+            <div class="auth-email-panel{% if form.errors %} is-open{% endif %}" data-auth-email-panel>
+                <div class="auth-email-panel-top"><span>CREATE WITH EMAIL</span><button type="button" data-auth-email-close aria-label="Close email sign up">×</button></div>
+                <form method="post" action="{% url 'account_signup' %}" class="auth-form">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="auth-field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.help_text %}<small class="auth-help">{{ field.help_text|safe }}</small>{% endif %}{% if field.errors %}<span class="auth-field-error">{{ field.errors|striptags }}</span>{% endif %}</div>
+                    {% endfor %}
+                    <button class="auth-submit" type="submit">Create account <span>→</span></button>
+                </form>
+            </div>
+
+            <p class="auth-foot auth-foot-modern">Already have an account? <a href="{% url 'account_login' %}">Log in</a></p>
+        </div>
+    </section>
+</main>
+<script>
+(function () {
+    const toggle = document.querySelector('[data-auth-email-toggle]');
+    const panel = document.querySelector('[data-auth-email-panel]');
+    const close = document.querySelector('[data-auth-email-close]');
+    if (!toggle || !panel) return;
+    const openPanel = () => {
+        panel.classList.add('is-open');
+        toggle.setAttribute('aria-expanded', 'true');
+        const firstInput = panel.querySelector('input');
+        if (firstInput) setTimeout(() => firstInput.focus(), 80);
+    };
+    const closePanel = () => {
+        panel.classList.remove('is-open');
+        toggle.setAttribute('aria-expanded', 'false');
+    };
+    toggle.addEventListener('click', openPanel);
+    if (close) close.addEventListener('click', closePanel);
+})();
+</script>
+</body>
+</html>

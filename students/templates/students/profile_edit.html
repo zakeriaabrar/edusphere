@@ -1,0 +1,39 @@
+{% extends 'students/base.html' %}
+{% block title %}Edit Profile · EduSphere{% endblock %}
+{% block page_label %}Edit Profile{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><span class="profile-kicker">PROFILE MANAGEMENT</span><h1>Edit Profile</h1><p>Update your personal information and keep your university profile up to date.</p></div>
+  <div class="actions"><a class="btn" href="{% url 'profile' %}"><i data-lucide="arrow-left"></i>Back to Profile</a></div>
+</div>
+
+<section class="card profile-edit-shell">
+  <div class="profile-edit-intro"><div class="profile-edit-avatar">{% if student.profile_photo %}<img src="{{ student.profile_photo.url }}" alt="Profile photo of {{ student.full_name }}">{% else %}{{ student.full_name|first|upper }}{% endif %}</div><div><span class="profile-kicker">PERSONAL INFORMATION</span><h2>{{ student.full_name }}</h2><p>Only personal details and your profile photo can be changed here. Academic information remains institution-controlled.</p></div></div>
+  <form method="post" enctype="multipart/form-data" class="profile-edit-form">{% csrf_token %}
+    <div class="profile-form-section"><div class="profile-form-heading"><div><h2>Personal Information</h2><p>These details are editable.</p></div><i data-lucide="user-round"></i></div>
+      <div class="form-grid">
+        <div class="field"><label for="id_full_name">Full Name</label>{{ form.full_name }}{% for error in form.full_name.errors %}<span class="form-error">{{ error }}</span>{% endfor %}</div>
+        <div class="field"><label for="id_email">Email</label>{{ form.email }}{% for error in form.email.errors %}<span class="form-error">{{ error }}</span>{% endfor %}</div>
+        <div class="field"><label for="id_phone">Phone</label>{{ form.phone }}{% for error in form.phone.errors %}<span class="form-error">{{ error }}</span>{% endfor %}</div>
+        <div class="field"><label for="id_date_of_birth">Date of Birth</label>{{ form.date_of_birth }}{% for error in form.date_of_birth.errors %}<span class="form-error">{{ error }}</span>{% endfor %}</div>
+        <div class="field"><label for="id_gender">Gender</label>{{ form.gender }}{% for error in form.gender.errors %}<span class="form-error">{{ error }}</span>{% endfor %}</div>
+        <div class="field full"><label for="id_address">Address</label>{{ form.address }}{% for error in form.address.errors %}<span class="form-error">{{ error }}</span>{% endfor %}</div>
+      </div>
+    </div>
+
+    <div class="profile-form-section"><div class="profile-form-heading"><div><h2>Academic Information</h2><p>Official university information is read-only.</p></div><i data-lucide="lock-keyhole"></i></div>
+      <div class="profile-readonly-grid">
+        <div><span>Student ID</span><strong>{{ student.student_id }}</strong></div><div><span>Department</span><strong>{{ student.department }}</strong></div><div><span>Program</span><strong>{{ student.program }}</strong></div><div><span>Semester</span><strong>{{ student.semester }}</strong></div><div><span>Enrollment Year</span><strong>{{ student.enrollment_year }}</strong></div><div><span>GPA</span><strong>{{ student.gpa }}</strong></div><div><span>Attendance</span><strong>{{ student.attendance }}%</strong></div><div><span>Status</span><strong>{{ student.status }}</strong></div>
+      </div>
+    </div>
+
+    <div class="profile-form-section" id="profile-photo"><div class="profile-form-heading"><div><h2>Profile Photo</h2><p>Upload a JPG, PNG, or WebP image up to 5 MB.</p></div><i data-lucide="camera"></i></div>
+      <div class="profile-photo-editor"><div class="profile-avatar-editor">{% if student.profile_photo %}<img src="{{ student.profile_photo.url }}" alt="Current profile photo">{% else %}{{ student.full_name|first|upper }}{% endif %}</div><div class="profile-photo-input"><label for="id_profile_photo">Change Photo</label>{{ form.profile_photo }}<span class="help">A clear square portrait works best.</span>{% for error in form.profile_photo.errors %}<span class="form-error">{{ error }}</span>{% endfor %}</div></div>
+      {% if student.profile_photo %}<div class="profile-photo-remove"><button class="btn btn-danger" type="submit" name="action" value="remove_photo">Remove Current Photo</button></div>{% endif %}
+    </div>
+
+    {% if form.non_field_errors %}<div class="form-error profile-form-global-errors">{% for error in form.non_field_errors %}{{ error }}{% endfor %}</div>{% endif %}
+    <div class="form-actions profile-edit-actions"><a class="btn" href="{% url 'profile' %}">Cancel</a><button class="btn btn-primary" type="submit" name="action" value="save_profile"><i data-lucide="save"></i>Save Changes</button></div>
+  </form>
+</section>
+{% endblock %}

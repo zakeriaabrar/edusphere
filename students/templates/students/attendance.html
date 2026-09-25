@@ -1,0 +1,277 @@
+
+{% extends 'students/base.html' %}
+
+{% block title %}Attendance · EduSphere{% endblock %}
+
+{% block page_label %}Attendance{% endblock %}
+
+{% block content %}
+
+<div class="page-head">
+    <div>
+        <h1>Attendance</h1>
+        <p>Monitor recorded attendance across the academic registry.</p>
+    </div>
+
+    <span class="badge info">
+        Threshold {{ threshold }}%
+    </span>
+</div>
+
+
+<!-- KPI CARDS -->
+<div class="grid grid-3">
+
+    <!-- My Attendance -->
+    <div class="card kpi">
+        <div>
+            <div class="label">My attendance</div>
+
+            <div class="value">
+                {% if current_student %}
+                    {{ current_student.attendance }}%
+                {% else %}
+                    —
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="kpi-icon">
+            <i data-lucide="clipboard-check"></i>
+        </div>
+    </div>
+
+
+    <!-- Average / My Record -->
+    <div class="card kpi">
+        <div>
+            <div class="label">
+                {% if is_portal_admin %}
+                    Registry average
+                {% else %}
+                    My record
+                {% endif %}
+            </div>
+
+            <div class="value">
+                {{ average_attendance }}%
+            </div>
+        </div>
+
+        <div class="kpi-icon">
+            <i data-lucide="bar-chart-3"></i>
+        </div>
+    </div>
+
+
+    <!-- Threshold -->
+    <div class="card kpi">
+        <div>
+            <div class="label">
+                {% if is_portal_admin %}
+                    Below threshold
+                {% else %}
+                    Target
+                {% endif %}
+            </div>
+
+            <div class="value">
+                {% if is_portal_admin %}
+                    {{ below_threshold_count }}
+                {% else %}
+                    {{ threshold }}%
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="kpi-icon">
+            <i data-lucide="triangle-alert"></i>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- MY ATTENDANCE -->
+<section class="card card-pad" style="margin-top:16px">
+
+    <div class="section-title">
+        <div>
+            <h2>My attendance</h2>
+            <p>Progress against the configured academic threshold.</p>
+        </div>
+    </div>
+
+
+    {% if current_student %}
+
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px">
+            <b>{{ current_student.attendance }}%</b>
+
+            <span style="color:var(--muted)">
+                Target {{ threshold }}%
+            </span>
+        </div>
+
+
+        <div class="progress">
+            <span style="width:{{ current_student.attendance }}%"></span>
+        </div>
+
+
+        {% if current_student.attendance < threshold %}
+
+            <div class="flash error" style="margin-top:14px">
+                <i data-lucide="triangle-alert"></i>
+
+                Your recorded attendance is below the
+                {{ threshold }}% threshold.
+            </div>
+
+        {% endif %}
+
+
+    {% else %}
+
+        <div class="empty">
+            <h3>No linked student record</h3>
+
+            <p>
+                Your account is not linked to a student email.
+            </p>
+        </div>
+
+    {% endif %}
+
+</section>
+
+
+<!-- ADMIN ATTENDANCE REGISTRY -->
+{% if is_portal_admin %}
+
+<section class="card" style="margin-top:16px">
+
+    <div class="section-title" style="padding:18px 20px 0">
+
+        <div>
+            <h2>Attendance registry</h2>
+
+            <p>
+                Actual attendance values from student records.
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="table-wrap">
+
+        <table class="data-table">
+
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Department</th>
+                    <th>Semester</th>
+                    <th>Attendance</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+
+            <tbody>
+
+                {% for student in students %}
+
+                <tr>
+
+                    <td>
+
+                        <div class="person">
+
+                            <span class="avatar">
+                                {{ student.full_name|first|upper }}
+                            </span>
+
+                            <div>
+                                <b>{{ student.full_name }}</b>
+
+                                <small>
+                                    {{ student.student_id }}
+                                </small>
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+                        {{ student.department }}
+                    </td>
+
+
+                    <td>
+                        {{ student.semester }}
+                    </td>
+
+
+                    <td>
+                        <b>{{ student.attendance }}%</b>
+                    </td>
+
+
+                    <td>
+
+                        {% if student.attendance >= threshold %}
+
+                            <span class="badge success">
+                                Good
+                            </span>
+
+                        {% elif student.attendance >= 60 %}
+
+                            <span class="badge warning">
+                                Warning
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge danger">
+                                Critical
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="5">
+
+                        <div class="empty">
+                            <h3>No attendance data</h3>
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+{% endif %}
+
+{% endblock %}

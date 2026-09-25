@@ -1,0 +1,12 @@
+{% extends 'students/base.html' %}
+{% block title %}Delete Profile · EduSphere{% endblock %}
+{% block page_label %}Delete Profile{% endblock %}
+{% block content %}
+<div class="page-head"><div><span class="profile-danger-kicker">DANGER ZONE</span><h1>Delete Profile</h1><p>Review this destructive action before continuing.</p></div><div class="actions"><a class="btn" href="{% url 'profile' %}"><i data-lucide="arrow-left"></i>Back to Profile</a></div></div>
+<section class="card profile-delete-card">
+  <div class="profile-delete-icon"><i data-lucide="triangle-alert"></i></div>
+  <div class="profile-delete-copy"><h2>Delete your EduSphere profile?</h2><p>You are about to permanently delete the account for <strong>{{ student.full_name }}</strong> ({{ student.student_id }}).</p><p>This will remove your Django account and linked student profile from EduSphere. This action cannot be undone.</p></div>
+  <div class="profile-delete-warning"><i data-lucide="shield-alert"></i><span>Make sure you have reviewed this decision. Profile deletion is permanent and you will be signed out immediately.</span></div>
+  <form method="post" class="profile-delete-actions">{% csrf_token %}<a class="btn" href="{% url 'profile' %}">Cancel</a><button class="btn btn-danger-solid" type="submit" name="confirm_delete" value="yes"><i data-lucide="trash-2"></i>Yes, Delete My Profile</button></form>
+</section>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Signed out · EduSphere</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'students/css/app.css' %}">
+</head>
+<body class="auth-body">
+<main class="auth-shell logout-shell">
+    <section class="auth-visual">
+        <div class="auth-visual-glow auth-glow-one"></div><div class="auth-visual-glow auth-glow-two"></div>
+        <div class="auth-visual-inner">
+            <div class="auth-logo-lockup"><span class="auth-logo">E</span><div><strong>EduSphere</strong><small>Academic Portal</small></div></div>
+            <div class="auth-visual-copy"><span class="auth-kicker">SEE YOU AGAIN</span><h1>Your academic<br><span>workspace awaits.</span></h1><p>Your session has ended securely. Sign in whenever you are ready to continue.</p></div>
+            <div class="auth-feature-grid">
+                <div><span class="auth-feature-icon">✓</span><div><b>Secure Sign Out</b><small>Your session has been closed</small></div></div>
+                <div><span class="auth-feature-icon">↗</span><div><b>Quick Access</b><small>Return to your portal in seconds</small></div></div>
+            </div>
+            <div class="auth-visual-footer">EduSphere · Student Academic Management System</div>
+        </div>
+    </section>
+    <section class="auth-panel">
+        <div class="auth-card auth-card-modern logout-card">
+            <div class="auth-mobile-brand"><span class="auth-logo auth-logo-light">E</span><div><strong>EduSphere</strong><small>Academic Portal</small></div></div>
+            <div class="logout-icon"><span>✓</span></div>
+            <div class="auth-heading logout-heading"><span class="auth-mini-label">SESSION ENDED</span><h2>You’re signed out</h2><p>Thanks for using EduSphere. Your account is safely signed out.</p></div>
+            <a class="auth-submit auth-link-button" href="{% url 'account_login' %}">Sign in again <span>→</span></a>
+            <a class="logout-home" href="/">Return to EduSphere home</a>
+        </div>
+    </section>
+</main>
+</body>
+</html>

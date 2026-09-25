@@ -1,0 +1,92 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="EduSphere — Academic Management, Simplified.">
+<title>{% block title %}EduSphere{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Sans:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'students/css/app.css' %}">
+<script src="https://unpkg.com/lucide@latest"></script>
+{% block extra_css %}{% endblock %}
+</head>
+<body class="{% if portal_settings and portal_settings.dark_mode %}theme-dark{% endif %}">
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand-row">
+      <a class="brand" href="{% url 'dashboard' %}"><span class="brand-symbol">E</span><span><b>EduSphere</b><small>Academic Management, Simplified.</small></span></a>
+      <button class="icon-btn sidebar-close" id="sidebarClose" type="button"><i data-lucide="x"></i></button>
+    </div>
+    <div class="sidebar-user">
+      <div class="avatar avatar-lg">{% if current_student and current_student.profile_photo %}<img src="{{ current_student.profile_photo.url }}" alt="{{ current_student.full_name }}">{% elif current_student %}{{ current_student.full_name|first|upper }}{% else %}{{ user.email|first|upper }}{% endif %}</div>
+      <div><strong>{% if current_student %}{{ current_student.full_name }}{% else %}{{ user.get_username }}{% endif %}</strong><small>{% if is_portal_admin %}System administrator{% elif current_student %}{{ current_student.student_id }}{% else %}Complete profile{% endif %}</small></div>
+    </div>
+    <nav class="nav">
+      {% if is_portal_admin %}
+      <div class="nav-section"><span>Administration</span>
+        <a class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}"><i data-lucide="layout-dashboard"></i>Dashboard</a>
+        <a class="nav-item {% if 'student' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'student_list' %}"><i data-lucide="users"></i>Students</a>
+        <a class="nav-item {% if 'course' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'courses' %}"><i data-lucide="book-open"></i>Courses</a>
+      </div>
+      <div class="nav-section"><span>Academics</span>
+        <a class="nav-item {% if request.resolver_match.url_name == 'academic' %}active{% endif %}" href="{% url 'academic' %}"><i data-lucide="library"></i>Academic Overview</a>
+        <a class="nav-item {% if request.resolver_match.url_name == 'results' %}active{% endif %}" href="{% url 'results' %}"><i data-lucide="graduation-cap"></i>Results</a>
+        <a class="nav-item {% if request.resolver_match.url_name == 'attendance' %}active{% endif %}" href="{% url 'attendance' %}"><i data-lucide="clipboard-check"></i>Attendance</a>
+        <a class="nav-item {% if request.resolver_match.url_name == 'schedule' %}active{% endif %}" href="{% url 'schedule' %}"><i data-lucide="calendar-days"></i>Schedule</a>
+      </div>
+      <div class="nav-section"><span>Insights</span>
+        <a class="nav-item {% if request.resolver_match.url_name == 'reports' %}active{% endif %}" href="{% url 'reports' %}"><i data-lucide="file-chart-column"></i>Reports</a>
+        <a class="nav-item {% if request.resolver_match.url_name == 'analytics' %}active{% endif %}" href="{% url 'analytics' %}"><i data-lucide="chart-no-axes-combined"></i>Analytics</a>
+        <a class="nav-item {% if request.resolver_match.url_name == 'notifications' %}active{% endif %}" href="{% url 'notifications' %}"><i data-lucide="bell"></i>Notifications</a>
+      </div>
+      {% else %}
+        {% if current_student %}
+        <div class="nav-section"><span>My Portal</span>
+          <a class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}"><i data-lucide="layout-dashboard"></i>Dashboard</a>
+          <a class="nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}" href="{% url 'profile' %}"><i data-lucide="user-round"></i>My Profile</a>
+        </div>
+        <div class="nav-section"><span>Academics</span>
+          <a class="nav-item {% if request.resolver_match.url_name == 'courses' %}active{% endif %}" href="{% url 'courses' %}"><i data-lucide="book-open"></i>My Courses</a>
+          <a class="nav-item {% if request.resolver_match.url_name == 'results' %}active{% endif %}" href="{% url 'results' %}"><i data-lucide="graduation-cap"></i>My Results</a>
+          <a class="nav-item {% if request.resolver_match.url_name == 'attendance' %}active{% endif %}" href="{% url 'attendance' %}"><i data-lucide="clipboard-check"></i>My Attendance</a>
+          <a class="nav-item {% if request.resolver_match.url_name == 'schedule' %}active{% endif %}" href="{% url 'schedule' %}"><i data-lucide="calendar-days"></i>My Schedule</a>
+        </div>
+        <div class="nav-section"><span>Account</span>
+          <a class="nav-item {% if request.resolver_match.url_name == 'notifications' %}active{% endif %}" href="{% url 'notifications' %}"><i data-lucide="bell"></i>Notifications</a>
+          <a class="nav-item {% if request.resolver_match.url_name == 'settings' %}active{% endif %}" href="{% url 'settings' %}"><i data-lucide="settings"></i>Settings</a>
+        </div>
+        {% else %}
+        <div class="nav-section"><span>Setup</span>
+          <a class="nav-item active" href="{% url 'student_onboarding' %}"><i data-lucide="user-round-plus"></i>Complete Profile</a>
+        </div>
+        {% endif %}
+      {% endif %}
+    </nav>
+    <div class="sidebar-bottom">
+      {% if is_portal_admin %}<a class="nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}" href="{% url 'profile' %}"><i data-lucide="user-round"></i>Admin Profile</a>{% endif %}
+      <form method="post" action="{% url 'portal_logout' %}" class="nav-logout-form">{% csrf_token %}<button type="submit" class="nav-item danger nav-logout-button"><i data-lucide="log-out"></i>Sign out</button></form>
+    </div>
+  </aside>
+  <div class="mobile-overlay" id="sidebarBackdrop"></div>
+  <section class="main-shell">
+    <header class="topbar">
+      <div class="topbar-left"><button class="icon-btn menu-toggle" id="menuButton" type="button"><i data-lucide="menu"></i></button><div class="crumb"><a href="{% url 'dashboard' %}">EduSphere</a><i data-lucide="chevron-right"></i><strong>{% block page_label %}Portal{% endblock %}</strong></div></div>
+      <div class="topbar-actions">
+        {% if is_portal_admin %}<form class="top-search" action="{% url 'student_list' %}" method="get"><i data-lucide="search"></i><input name="search" value="{% if request.resolver_match.url_name == 'student_list' %}{{ search }}{% endif %}" placeholder="Search students" aria-label="Search students"><kbd>Ctrl K</kbd></form>{% else %}<div class="portal-role-chip"><i data-lucide="shield-check"></i>Student Portal</div>{% endif %}
+        {% if current_student %}<a class="icon-btn" href="{% url 'notifications' %}" aria-label="Notifications"><i data-lucide="bell"></i>{% if current_student.attendance < 75 %}<em></em>{% endif %}</a>{% endif %}
+        <a class="profile-trigger" href="{% if current_student %}{% url 'profile' %}{% else %}{% url 'student_onboarding' %}{% endif %}"><span class="avatar">{% if current_student and current_student.profile_photo %}<img src="{{ current_student.profile_photo.url }}" alt="{{ current_student.full_name }}">{% elif current_student %}{{ current_student.full_name|first|upper }}{% else %}{{ user.email|first|upper }}{% endif %}</span><span class="profile-trigger-copy"><b>{% if current_student %}{{ current_student.full_name }}{% else %}Complete Profile{% endif %}</b><small>{% if current_student %}{{ current_student.department }}{% else %}Setup required{% endif %}</small></span><i data-lucide="chevron-down"></i></a>
+      </div>
+    </header>
+    <main class="content">
+      {% if messages %}<div class="flash-stack">{% for message in messages %}<div class="flash {{ message.tags|default:'info' }}"><i data-lucide="circle-check"></i><span>{{ message }}</span></div>{% endfor %}</div>{% endif %}
+      {% block content %}{% endblock %}
+    </main>
+  </section>
+</div>
+<script src="{% static 'students/js/app.js' %}"></script>
+<script>document.addEventListener('DOMContentLoaded',()=>{if(window.lucide)lucide.createIcons();});</script>
+{% block extra_js %}{% endblock %}
+</body></html>
