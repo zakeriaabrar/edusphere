@@ -36,11 +36,11 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    "edusphere-production-e722.up.railway.app",
+    "exemplary-warmth-production-82ae.up.railway.app",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://edusphere-production-e722.up.railway.app",
+    "https://exemplary-warmth-production-82ae.up.railway.app",
 ]
 
 
