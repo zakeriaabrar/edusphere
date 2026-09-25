@@ -40,7 +40,7 @@ ALLOWED_HOSTS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://edusphere-production-a6d2.up.railway.app",
+    "https://edusphere-production-e722.up.railway.app",
 ]
 
 # Application definition
