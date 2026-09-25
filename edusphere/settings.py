@@ -36,13 +36,12 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    "exemplary-warmth-production-82ae.up.railway.app",
+    ".railway.app",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://exemplary-warmth-production-82ae.up.railway.app",
+    "https://*.railway.app",
 ]
-
 
 # Application definition
 
